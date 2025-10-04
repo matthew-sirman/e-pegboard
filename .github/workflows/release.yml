@@ -18,10 +18,6 @@ jobs:
       with:
         automagic: true
 
-    - name: Build project
-      run: |
-        dune build
-
     - name: Package artifact
       run: |
         mkdir -p artifacts
