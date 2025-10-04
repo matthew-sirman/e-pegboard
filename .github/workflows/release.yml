@@ -11,24 +11,15 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    - name: Set up OCaml and Opam
-      uses: ocaml/setup-ocaml@v2
+    - name: Set up Dune
+      uses: ocaml-dune/setup-ocaml@v0
       with:
-        ocaml-compiler: '5.2.1'
-
-    - name: Add Jane Street opam repository
-      run: |
-        opam repository add janestreet git+https://github.com/janestreet/opam-repository.git
-        opam update
-
-    - name: Install dependencies
-      run: opam install . --deps-only
+        automagic: true
 
     - name: Build project
       run: |
-        eval $(opam env)
         dune build
 
     - name: Package artifact
