@@ -20,7 +20,7 @@ jobs:
 
     - name: Add Jane Street opam repository
       run: |
-        opam repository add janestreet git+https://github.com/janestreet/opam-repository.github
+        opam repository add janestreet git+https://github.com/janestreet/opam-repository.git
         opam update
 
     - name: Install dependencies
