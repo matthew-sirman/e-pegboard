@@ -5,22 +5,27 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github matthew-sirman/e-pegboard))
 
-(authors "Author Name")
+(authors "Matthew Sirman")
 
-(maintainers "Maintainer Name")
+(maintainers "Matthew Sirman")
 
 (license LICENSE)
 
-(documentation https://url/to/documentation)
-
 (package
  (name pegboard)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml dune)
- (tags
-  (topics "to describe" your project)))
+ (synopsis "Badminton e-pegboard app")
+ (description "Badminton e-pegboard app")
+ (depends
+  (ocaml (= 5.2.1))
+   dune
+  (dune-configurator (= 3.19.1))
+   bonsai
+   bonsai_web
+   core
+   js_of_ocaml
+   bonsai_web_components
+   ppx_html))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project

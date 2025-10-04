@@ -1,0 +1,12 @@
+(lang dune 3.15)
+
+(lock_dir
+ (repositories overlay opam janestreet))
+
+(repository
+ (name opam)
+ (url "git+https://github.com/ocaml/opam-repository.git"))
+
+(repository
+ (name janestreet)
+ (url "git+https://github.com/janestreet/opam-repository.git"))

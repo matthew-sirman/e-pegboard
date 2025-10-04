@@ -1,5 +1,6 @@
 _build/**
 _opam/**
+dune.lock/**
 **/*.bc
 **/*.bc.js
 **/*.exe

@@ -7,8 +7,7 @@
    bonsai_web_components.tailwind_v3_colors
    bonsai_web_components.web_ui_file
    bonsai_web_components.web_ui_form
-   core_kernel
-   seq)
+   core_kernel)
  (preprocess
   (pps
     ppx_let
