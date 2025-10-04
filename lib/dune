@@ -1,0 +1,21 @@
+(library
+ (name pegboard_app)
+ (libraries
+   async_kernel
+   bonsai
+   bonsai_web
+   bonsai_web_components.tailwind_v3_colors
+   bonsai_web_components.web_ui_file
+   bonsai_web_components.web_ui_form
+   core_kernel
+   seq)
+ (preprocess
+  (pps
+    ppx_let
+    bonsai.ppx_bonsai
+    ppx_html
+    ppx_sexp_conv
+    ppx_compare
+    ppx_enumerate
+    js_of_ocaml-ppx))
+ (js_of_ocaml))

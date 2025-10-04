@@ -1,0 +1,6 @@
+_build/**
+_opam/**
+**/*.bc
+**/*.bc.js
+**/*.exe
+**/*.sexp

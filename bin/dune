@@ -1,0 +1,7 @@
+(executable
+ (public_name pegboard)
+ (name main)
+ (modes byte js)
+ (libraries bonsai_web core_kernel pegboard_app)
+ (preprocess (pps js_of_ocaml-ppx))
+ (promote (until-clean)))
