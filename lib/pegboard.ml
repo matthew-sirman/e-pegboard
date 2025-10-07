@@ -27,6 +27,62 @@ module State = struct
   [@@deriving equal]
 end
 
+let draw_best_game ranked_games =
+  (* we compute with a normalised softmax function with temperatue
+
+     The function is described here:
+     https://en.wikipedia.org/wiki/Softmax_function#Reinforcement_learning *)
+  let temperature =
+    (* temperature must be in range (0, 1] (exactly 0 is not allowed)
+       Lower temperature means less good games are likely to be picked
+       Higher temperature means less good games are unlikely to be picked *)
+    0.75
+  in
+  let compare =
+    Comparable.lift
+      [%compare: float]
+      ~f:(fun (_, penalty) -> penalty)
+  in
+  let%bind.Option (_, min) = List.min_elt ranked_games ~compare
+  and (_, max) = List.max_elt ranked_games ~compare in
+  let normalised =
+    List.map
+      ranked_games
+      ~f:(fun (game, penalty) -> (game, penalty /. (max -. min)))
+  in
+  let softmax_weights =
+    let pre_weights =
+      let factor =
+        let sample_size = List.length ranked_games |> Float.of_int in
+        -1. *. temperature *. Float.log (sample_size +. 1.)
+         /. (1. -. temperature)
+      in
+      List.map
+        normalised
+        ~f:(fun (game, xi) ->
+            (game, Float.exp (xi *. factor)))
+    in
+    let base =
+      List.sum (module Float) pre_weights ~f:(fun (_, pre_w) -> pre_w)
+    in
+    List.map pre_weights ~f:(fun (game, pre_w) -> (game, pre_w /. base))
+  in
+  (* The [softmax_weights] now add to 1. We draw from them by lining them
+     up as segments from [0-1] on the real number line, and randomly
+     choosing a number from 0 to 1. Whichever segment the random number
+     falls in is selected *)
+  let draw = Random.float 1. in
+  let rec choose_game position = function
+    | [] -> None
+    | (game, weight) :: games ->
+      (* does the [draw] lie in this segment? *)
+      if Float.(position <= draw && draw < position +. weight)
+      then (printf "drawn with weight %f\n" weight; Some game)
+      else choose_game (position +. weight) games
+  in
+  choose_game 0. softmax_weights
+;;
+
 let decide_next_game
     time
     (player_queue : Player.t list)
@@ -219,17 +275,9 @@ let decide_next_game
       possible_games_from_first_8
       ~f:(fun game -> game, rank_game game)
   in
-  let best_game =
-    (* TODO: draw from distribution *)
-    List.min_elt
-      ranked_games
-      ~compare:(Comparable.lift
-                  [%compare: float]
-                  ~f:(fun (_, penalty) -> penalty))
-  in
-  match best_game with
+  match draw_best_game ranked_games with
   | None -> None, player_queue
-  | Some (game, _) ->
+  | Some game ->
     let not_in_new_game { Player.uuid; _ } =
       let { Court.Match.team1 = { player1 = p1; player2 = p2; side = _ }
           ; team2 = { player1 = p3; player2 = p4; side = _ }
